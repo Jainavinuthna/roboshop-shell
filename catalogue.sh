@@ -45,7 +45,7 @@ useradd roboshop &>> $LOGFILE
 
 VALIDATE $? "Creating roboshop user"
 
-mkdir /app &>> $LOGFILE
+mkdir -p /app &>> $LOGFILE
 
 VALIDATE $? "Creating app directory"
 
