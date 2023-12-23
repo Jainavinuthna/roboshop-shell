@@ -54,36 +54,35 @@ mkdir -p /app &>> $LOGFILE
 
 VALIDATE $? "Creating app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip &>> $LOGFILE
+curl -L -o /tmp/user.zip https://roboshop-builds.s3.amazonaws.com/user.zip
 
-VALIDATE $? "Downloading catalogue app"
+VALIDATE $? "Downloading user app"
 
 cd /app &>> $LOGFILE
 
-unzip -o /tmp/catalogue.zip &>> $LOGFILE
+unzip -o /tmp/user.zip &>> $LOGFILE
 
-VALIDATE $? "unzipping catalogue"
+VALIDATE $? "unzipping user"
 
 npm install &>> $LOGFILE
 
 VALIDATE $? "install dependencies"
 
-#use absloutle path because catalouge.service exist there
-cp /home/centos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
+cp /home/centos/roboshop-shell/user.serivce /etc/systemd/system/user.service
 
-VALIDATE $? "copying catalogue service file"
+VALIDATE $? "copying user service file"
 
 systemctl daemon-reload &>> $LOGFILE
 
-VALIDATE $? "catalogue daemon reload"
+VALIDATE $? "user daemon reload"
 
-systemctl enable catalogue &>> $LOGFILE
+systemctl enable user &>> $LOGFILE
 
-VALIDATE $? "Enable catalogue"
+VALIDATE $? "Enable user"
 
-systemctl start catalogue &>> $LOGFILE
+systemctl start user &>> $LOGFILE
 
-VALIDATE $? "starting catalogue"
+VALIDATE $? "starting user"
 
 cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
 
@@ -93,6 +92,6 @@ dnf install mongodb-org-shell -y
 
 VALIDATE $? "installing mongodb client"
 
-mongo --host $MONGODB_HOST </app/schema/catalogue.js
+mongo --host $MONGODB_HOST </app/schema/user.js
 
-VALIDATE $? "Loading catalouge data into mongodb"
+VALIDATE $? "Loading user data into mongodb"
