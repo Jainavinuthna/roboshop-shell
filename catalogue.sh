@@ -55,7 +55,7 @@ VALIDATE $? "Downloading catalogue app"
 
 cd /app &>> $LOGFILE
 
-unzip /tmp/catalogue.zip &>> $LOGFILE
+unzip -o /tmp/catalogue.zip &>> $LOGFILE
 
 VALIDATE $? "unzipping catalogue"
 
