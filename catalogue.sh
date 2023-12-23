@@ -6,7 +6,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-
+MONGODB_HOST=mongodb.nkvj.cloud
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
 
@@ -63,4 +63,31 @@ npm install &>> $LOGFILE
 
 VALIDATE $? "install dependencies"
 
-cp catalogue.service /etc/systemd/system/catalogue.service
+#use absloutle path because catalouge.service exist there
+cp /home/vinudhna/Devops/repos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
+
+VALIDATE $? "coping catalogue service file"
+
+systemctl daemon-reload &>> $LOGFILE
+
+VALIDATE $? "catalogue daemon reload"
+
+systemctl enable catalogue &>> $LOGFILE
+
+VALIDATE $? "Enable catalogue"
+
+systemctl start catalogue &>> $LOGFILE
+
+VALIDATE $? "starting catalogue"
+
+cp /home/vinudhna/Devops/repos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+
+VALIDATE $? "copying mongo.repo"
+
+dnf install mongodb-org-shell -y
+
+VALIDATE $? "installing mongodb client"
+
+mongo --host $MONGODB_HOST </app/schema/catalogue.js
+
+VALIDATE $? "Loading catalouge data into mongodb"
