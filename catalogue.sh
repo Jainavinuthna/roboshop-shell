@@ -64,9 +64,9 @@ npm install &>> $LOGFILE
 VALIDATE $? "install dependencies"
 
 #use absloutle path because catalouge.service exist there
-cp /home/vinudhna/Devops/repos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
+cp /home/Devops/repos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
 
-VALIDATE $? "coping catalogue service file"
+VALIDATE $? "copying catalogue service file"
 
 systemctl daemon-reload &>> $LOGFILE
 
