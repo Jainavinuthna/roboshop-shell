@@ -80,7 +80,7 @@ systemctl start catalogue &>> $LOGFILE
 
 VALIDATE $? "starting catalogue"
 
-cp /home/vinudhna/Devops/repos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+cp /home/Devops/repos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
 
 VALIDATE $? "copying mongo.repo"
 
