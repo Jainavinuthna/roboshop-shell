@@ -6,7 +6,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-MONGODB_HOST=mongodb.nkvj.cloud
+
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
 
@@ -66,7 +66,7 @@ npm install &>> $LOGFILE
 
 VALIDATE $? "Installing dependencies"
 
-cp /home/centos/roboshop-shell/ /etc/systemd/system/cart.service &>> $LOGFILE
+cp /home/centos/roboshop-shell/cart.service /etc/systemd/system/cart.service &>> $LOGFILE
 
 VALIDATE $? "copying cart service"
 
