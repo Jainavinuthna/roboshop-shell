@@ -30,77 +30,64 @@ else
     echo -e  " you are root user"
 fi
 
-dnf module disable nodejs -y  &>> $LOGFILE
+dnf module disable nodejs -y
+dnf module enable nodejs:18 -y
 
-validate $? "disable nodejs"  
+dnf install nodejs -y
 
-dnf module enable nodejs:18 -y  &>> $LOGFILE
-
-validate $? "enable nodejs:18"  
-
-dnf install nodejs -y     &>> $LOGFILE
-
-validate $? "install node-js"  
-
-id  roboshop 
+id roboshop 
 if [ $? -ne 0 ]
-then 
-   useradd roboshop   
-   validate $? "roboshop user creation"
-else 
-echo -e "roboshop user already exist $Y skipping $N"
+then
+    useradd roboshop
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "roboshop user already exist $Y SKIPPING $N"
 fi
 
+mkdir -p /app &>> $LOGFILE
 
-validate $? "create roboshop"   
+VALIDATE $? "Creating app directory"
 
-mkdir -p /app       &>> $LOGFILE
+curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip &>> $LOGFILE
 
-validate $? "create directory"   
+VALIDATE $? "Downloading catalogue"
 
-curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip   &>> $LOGFILE
+cd /app &>> $LOGFILE
 
-validate $? "download catalogue application" 
+unzip -o /tmp/catalogue.zip &>> $LOGFILE
 
-cd /app   &>> $LOGFILE
+VALIDATE $? "unzipping directory"
 
+npm install &>> $LOGFILE
 
-unzip -o /tmp/catalogue.zip  &>> $LOGFILE
-
-validate $? "unzip catalogue application"  
-
-cd /app
-
-npm install  &>> $LOGFILE
-
-validate $? "installing dependcies"  
-
+VALIDATE $? "npm install"
 
 cp /home/centos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
 
-validate $? "copying the catalogue service file" 
+VALIDATE $? "copy catalogue service"
+
+systemctl daemon-reload &>> $LOGFILE
+
+VALIDATE $? "daemon reload"
+
+systemctl enable catalogue &>> $LOGFILE
+
+VALIDATE $? "enable catalogue"
+
+systemctl start catalogue &>> $LOGFILE
+
+VALIDATE $? "start catalogue"
+
+cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
+
+VALIDATE $? "copying mongo"
+
+dnf install mongodb-org-shell -y &>> $LOGFILE
+
+VALIDATE $? "installing mongo client"
+
+mongo --host mongodb.nkvj.cloud </app/schema/catalogue.js &>> $LOGFILE
+
+VALIDATE $? "schema reload"
 
 
-systemctl daemon-reload   &>> $LOGFILE
-
-validate $? "daaemon-reload"  
-
-systemctl enable  catalogue   &>> $LOGFILE
-
-validate $? "enabling catalogue"
-
-systemctl start catalogue     &>> $LOGFILE
-
-validate $? "starting catalogue"
-
-cp /home/centos/roboshop-shell/mongo.repo  /etc/yum.repos.d/mongo.repo    &>> $LOGFILE
-
-validate $? "copying mongodb file"
-
-dnf install mongodb-org-shell -y      &>> $LOGFILE
-
-validate $? "installing mongodb-org-shell "
-
-mongo --host $MONGODB_HOST </app/schema/catalogue.js   &>> $LOGFILE
-
-validate $? "loading catalogue into mongodb "
