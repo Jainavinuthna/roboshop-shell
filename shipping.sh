@@ -40,28 +40,54 @@ else
     echo -e "roboshop user already exist $Y SKIPPING $N"
 fi
 
-mkdir /app
+mkdir /app &>> $LOGFILE
 
-curl -L -o /tmp/shipping.zip https://roboshop-builds.s3.amazonaws.com/shipping.zip
+VALIDATE $? "Creating app directory"
 
-cd /app
+curl -L -o /tmp/shipping.zip https://roboshop-builds.s3.amazonaws.com/shipping.zip &>> $LOGFILE
 
-unzip -o /tmp/shipping.zip
+VALIDATE $? "Downloading shipping"
 
-mvn clean package
+cd /app &>> $LOGFILE
 
-mv target/shipping-1.0.jar shipping.jar
+VALIDATE $? "Moving to app directory"
 
-cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service
+unzip -o /tmp/shipping.zip &>> $LOGFILE
 
-systemctl daemon-reload
+VALIDATE $? "unzipping shipping"
 
-systemctl enable shipping 
+mvn clean package &>> $LOGFILE
 
-systemctl start shipping
+VALIDATE $? "Installing dependencies"
 
-dnf install mysql -y
+mv target/shipping-1.0.jar shipping.jar &>> $LOGFILE
 
-mysql -h mysql.nkvj.cloud -uroot -pRoboShop@1 < /app/schema/shipping.sql 
+VALIDATE $? "renaminng jar file"
 
-systemctl restart shipping
+cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service &>> $LOGFILE
+
+VALIDATE $? "copying shipping service"
+
+systemctl daemon-reload &>> $LOGFILE
+
+VALIDATE $? "daemon reload"
+
+systemctl enable shipping &>> $LOGFILE
+
+VALIDATE $? "enable shipping"
+
+systemctl start shipping &>> $LOGFILE
+
+VALIDATE $? "starting shipping"
+
+dnf install mysql -y &>> $LOGFILE
+
+VALIDATE $? "Install mysql client"
+
+mysql -h mysql.nkvj.cloud -uroot -pRoboShop@1 < /app/schema/shipping.sql &>> $LOGFILE
+
+VALIDATE $? "Loading shipping data"
+
+systemctl restart shipping &>> $LOGFILE
+
+VALIDATE $? "Restart shipping"
