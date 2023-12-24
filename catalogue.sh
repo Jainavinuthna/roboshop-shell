@@ -16,6 +16,7 @@ VALIDATE(){
 if [ $1 -ne 0 ]
 then 
 echo -e "$2..installation $R FAILED $N"
+exit 1
 else
 echo -e "$2..installation $G SUCESS $N"
 fi
@@ -85,14 +86,14 @@ systemctl start catalogue &>> $LOGFILE
 
 VALIDATE $? "starting catalogue"
 
-cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
 
 VALIDATE $? "copying mongo.repo"
 
-dnf install mongodb-org-shell -y
+dnf install mongodb-org-shell -y &>> $LOGFILE
 
 VALIDATE $? "installing mongodb client"
 
-mongo --host $MONGODB_HOST </app/schema/catalogue.js
+mongo --host $MONGODB_HOST </app/schema/catalogue.js &>> $LOGFILE
 
 VALIDATE $? "Loading catalouge data into mongodb"
