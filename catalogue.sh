@@ -30,10 +30,17 @@ else
     echo -e  " you are root user"
 fi
 
-dnf module disable nodejs -y
-dnf module enable nodejs:18 -y
+dnf module disable nodejs -y &>> $LOGFILE
 
-dnf install nodejs -y
+VALIDATE $? "disable nodejs"
+
+dnf module enable nodejs:18 -y &>> $LOGFILE
+
+VALIDATE $? "enable nodejs"
+
+dnf install nodejs -y &>> $LOGFILE
+
+VALIDATE $? "install nodejs"
 
 id roboshop 
 if [ $? -ne 0 ]
@@ -89,5 +96,3 @@ VALIDATE $? "installing mongo client"
 mongo --host mongodb.nkvj.cloud </app/schema/catalogue.js &>> $LOGFILE
 
 VALIDATE $? "schema reload"
-
-
