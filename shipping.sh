@@ -84,7 +84,7 @@ dnf install mysql -y &>> $LOGFILE
 
 VALIDATE $? "Install mysql client"
 
-mysql -h mysql.nkvj.cloud -uroot -pRoboShop@1 < /app/schema/shipping.sql &>> $LOGFILE
+mysql -h mysql.nkvj.cloud -uroot -pRoboShop@1 </app/schema/shipping.sql &>> $LOGFILE
 
 VALIDATE $? "Loading shipping data"
 
