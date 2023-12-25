@@ -6,7 +6,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-MONGODB_HOST=mongodb.nkvj.cloud
+Mysql_HOST=mysql.nkvj.cloud
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
 
@@ -84,7 +84,7 @@ dnf install mysql -y &>> $LOGFILE
 
 VALIDATE $? "Install mysql client"
 
-mysql -h mysql.nkvj.cloud -uroot -pRoboShop@1 </app/schema/shipping.sql &>> $LOGFILE
+mysql -h $Mysql_HOST -uroot -pRoboShop@1 </app/schema/shipping.sql &>> $LOGFILE
 
 VALIDATE $? "Loading shipping data"
 
